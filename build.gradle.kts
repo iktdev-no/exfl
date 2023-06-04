@@ -29,7 +29,7 @@ val reposiliteUrl = if (version.toString().endsWith("SNAPSHOT")) {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("reposilite") {
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
