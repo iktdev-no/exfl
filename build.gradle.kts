@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-val name = "exfl"
+val packageName = "exfl"
 group = "no.iktdev"
 version = "1.0-SNAPSHOT"
 
@@ -20,23 +20,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
-tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-    test {
-        useJUnitPlatform()
-    }
-
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-}
-
 
 val reposiliteUrl = if (version.toString().endsWith("SNAPSHOT")) {
     "https://reposilite.iktdev.no/snapshots"
@@ -46,7 +29,7 @@ val reposiliteUrl = if (version.toString().endsWith("SNAPSHOT")) {
 
 publishing {
     publications {
-        create<MavenPublication>("reposilite") {
+        create<MavenPublication>("maven") {
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
@@ -56,7 +39,7 @@ publishing {
                 }
             }
             pom {
-                name.set(name)
+                name.set(packageName)
                 description.set("Extend Functionality Library")
                 version = project.version.toString()
                 url.set(reposiliteUrl)
@@ -66,7 +49,7 @@ publishing {
     }
     repositories {
         maven {
-            name = name
+            name = packageName
             url = uri(reposiliteUrl)
             credentials {
                 username = System.getenv("reposiliteUsername")
