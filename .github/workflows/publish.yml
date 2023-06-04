@@ -30,6 +30,10 @@ jobs:
     - name: Set executable permission on gradlew
       run: chmod +x ./gradlew
 
+    - name: Test
+      working-directory: ${{ github.workspace }}
+      run: ls -la
+
     - name: Set library version
       working-directory: ${{ github.workspace }}
       run: |
