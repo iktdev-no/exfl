@@ -1,4 +1,6 @@
-package no.iktdev.extender.time
+package no.iktdev.exfl.time
+
+import no.iktdev.extender.time.UnixTimestamp
 
 class UnixTime {
     companion object {
