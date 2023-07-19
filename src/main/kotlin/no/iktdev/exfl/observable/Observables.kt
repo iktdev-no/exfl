@@ -114,6 +114,9 @@ class Observables {
         }
     }
 
-
+    fun <K,V> ObservableMap<K,V>.withListener(listener: ObservableMap.Listener<K,V>): ObservableMap<K,V> {
+        this.addListener(listener)
+        return this
+    }
 
 }
