@@ -73,4 +73,34 @@ class Observables {
             fun onListChanged(items: List<T>)
         }
     }
+
+    class ObservableMap<K,V>(private val initalItems: MutableMap<K,V> = mutableMapOf(), private val listener: Listener<K,V>? = null) {
+        var items: MutableMap<K,V> = mutableMapOf<K,V>()
+            private set
+        var listeners: MutableList<Listener<K,V>> = mutableListOf()
+            private set
+
+        init {
+            listener?.let { listeners.add(it) }
+            if (initalItems.isNotEmpty()) {
+                items.putAll(initalItems)
+                listeners.forEach { it.onMapSet(items) }
+            }
+        }
+
+        public fun put(key: K, value: V): V? {
+            return items.put(key, value)
+        }
+
+        public fun remove(key: K): V? {
+            return items.remove(key)
+        }
+
+
+        interface Listener<K,V> {
+            fun onPut(key: K, value: V)
+            fun onRemove(key: K, value: V)
+            fun onMapSet(items: MutableMap<K, V>)
+        }
+    }
 }
