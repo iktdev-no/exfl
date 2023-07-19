@@ -21,21 +21,21 @@ class ObservableMap<K, V>(private val map: MutableMap<K, V> = mutableMapOf()) : 
     override fun isEmpty(): Boolean = map.isEmpty()
     override fun clear() {
         map.clear()
-        listeners.forEach { it.onMapUpdated(map.toMutableMap()) }
+        listeners.forEach { it.onMapUpdated(map.toMap()) }
     }
 
     override fun put(key: K, value: V): V? {
         val oldValue = map.put(key, value)
         listeners.forEach {
             it.onPut(key, value)
-            it.onMapUpdated(map.toMutableMap())
+            it.onMapUpdated(map.toMap())
         }
         return oldValue
     }
 
     override fun putAll(from: Map<out K, V>) {
         map.putAll(from)
-        listeners.forEach { it.onMapUpdated(map.toMutableMap()) }
+        listeners.forEach { it.onMapUpdated(map.toMap()) }
     }
 
     override fun remove(key: K): V? {
@@ -69,6 +69,6 @@ class ObservableMap<K, V>(private val map: MutableMap<K, V> = mutableMapOf()) : 
     interface Listener<K, V> {
         fun onPut(key: K, value: V) {}
         fun onRemove(key: K, value: V) {}
-        fun onMapUpdated(map: MutableMap<K, V>) {}
+        fun onMapUpdated(map: Map<K, V>) {}
     }
 }
