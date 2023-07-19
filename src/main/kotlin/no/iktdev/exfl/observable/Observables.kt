@@ -74,33 +74,46 @@ class Observables {
         }
     }
 
-    class ObservableMap<K,V>(private val initalItems: MutableMap<K,V> = mutableMapOf(), private val listener: Listener<K,V>? = null) {
-        var items: MutableMap<K,V> = mutableMapOf<K,V>()
-            private set
-        var listeners: MutableList<Listener<K,V>> = mutableListOf()
-            private set
+    class ObservableMap<K, V> : MutableMap<K, V> by mutableMapOf<K, V>() {
 
-        init {
-            listener?.let { listeners.add(it) }
-            if (initalItems.isNotEmpty()) {
-                items.putAll(initalItems)
-                listeners.forEach { it.onMapSet(items) }
+        private val listeners: MutableList<Listener<K, V>> = mutableListOf()
+
+        override fun put(key: K, value: V): V? {
+            val oldValue = mutableMapOf<K, V>().put(key, value)
+            listeners.forEach {
+                it.onPut(key, value)
+                it.onMapUpdated(this)
             }
+            return oldValue
         }
 
-        public fun put(key: K, value: V): V? {
-            return items.put(key, value)
+        override fun remove(key: K): V? {
+            val value = mutableMapOf<K, V>().remove(key)
+            if (value != null) {
+                listeners.forEach {
+                    it.onRemove(key, value)
+                    it.onMapUpdated(this)
+
+                }
+            }
+            return value
         }
 
-        public fun remove(key: K): V? {
-            return items.remove(key)
+        fun addListener(listener: Listener<K, V>) {
+            listeners.add(listener)
         }
 
+        fun removeListener(listener: Listener<K, V>) {
+            listeners.remove(listener)
+        }
 
-        interface Listener<K,V> {
-            fun onPut(key: K, value: V)
-            fun onRemove(key: K, value: V)
-            fun onMapSet(items: MutableMap<K, V>)
+        interface Listener<K, V> {
+            fun onPut(key: K, value: V) {}
+            fun onRemove(key: K, value: V) {}
+            fun onMapUpdated(map: Map<K,V>) {}
         }
     }
+
+
+
 }
