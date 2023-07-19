@@ -74,49 +74,5 @@ class Observables {
         }
     }
 
-    class ObservableMap<K, V> : MutableMap<K, V> by mutableMapOf<K, V>() {
-
-        private val listeners: MutableList<Listener<K, V>> = mutableListOf()
-
-        override fun put(key: K, value: V): V? {
-            val oldValue = mutableMapOf<K, V>().put(key, value)
-            listeners.forEach {
-                it.onPut(key, value)
-                it.onMapUpdated(this)
-            }
-            return oldValue
-        }
-
-        override fun remove(key: K): V? {
-            val value = mutableMapOf<K, V>().remove(key)
-            if (value != null) {
-                listeners.forEach {
-                    it.onRemove(key, value)
-                    it.onMapUpdated(this)
-
-                }
-            }
-            return value
-        }
-
-        fun addListener(listener: Listener<K, V>) {
-            listeners.add(listener)
-        }
-
-        fun removeListener(listener: Listener<K, V>) {
-            listeners.remove(listener)
-        }
-
-        interface Listener<K, V> {
-            fun onPut(key: K, value: V) {}
-            fun onRemove(key: K, value: V) {}
-            fun onMapUpdated(map: Map<K,V>) {}
-        }
-    }
-
-    fun <K,V> ObservableMap<K,V>.withListener(listener: ObservableMap.Listener<K,V>): ObservableMap<K,V> {
-        this.addListener(listener)
-        return this
-    }
 
 }
