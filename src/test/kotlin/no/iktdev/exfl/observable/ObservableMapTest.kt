@@ -27,7 +27,7 @@ class ObservableMapTest {
                 println("onRemove: Key = $key, Value = $value")
             }
 
-            override fun onMapUpdated(map: MutableMap<String, Int>) {
+            override fun onMapUpdated(map: Map<String, Int>) {
                 println("onMapUpdated: $map")
             }
         }
