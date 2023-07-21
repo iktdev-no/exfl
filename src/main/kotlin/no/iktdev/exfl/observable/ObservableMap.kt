@@ -3,14 +3,6 @@ package no.iktdev.exfl.observable
 class ObservableMap<K, V>(private val map: MutableMap<K, V> = mutableMapOf()) : MutableMap<K, V> {
 
     private val listeners: MutableList<Listener<K, V>> = mutableListOf()
-    companion object {
-        fun <K, V> observableMapOf(vararg pairs: Pair<K, V>): ObservableMap<K, V> {
-            val observableMap = ObservableMap<K, V>()
-            observableMap.putAll(pairs)
-            return observableMap
-        }
-    }
-
     override val size: Int
         get() = map.size
 
@@ -71,4 +63,9 @@ class ObservableMap<K, V>(private val map: MutableMap<K, V> = mutableMapOf()) : 
         fun onRemove(key: K, value: V) {}
         fun onMapUpdated(map: Map<K, V>) {}
     }
+}
+fun <K, V> observableMapOf(vararg pairs: Pair<K, V>): ObservableMap<K, V> {
+    val observableMap = ObservableMap<K, V>()
+    observableMap.putAll(pairs)
+    return observableMap
 }
