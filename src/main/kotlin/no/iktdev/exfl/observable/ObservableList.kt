@@ -113,9 +113,9 @@ class ObservableList<T>(private val list: MutableList<T> = mutableListOf()): Mut
 
 
     interface Listener<T> {
-        fun onAdded(item: T)
-        fun onRemoved(item: T)
-        fun onListChanged(items: List<T>)
+        fun onAdded(item: T) {}
+        fun onRemoved(item: T) {}
+        fun onListChanged(items: List<T>) {}
     }
 }
 
