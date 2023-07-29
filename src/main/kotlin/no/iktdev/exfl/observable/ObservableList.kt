@@ -20,7 +20,11 @@ class ObservableList<T>(private val list: MutableList<T> = mutableListOf()): Mut
             println("Cant remove something that is not added")
     }
 
-    override val size = list.size
+    override val size: Int
+        get() = list.size
+
+
+
     override fun clear() {
         list.clear()
         listeners.forEach { it.onListChanged(list.toList())}
@@ -51,7 +55,7 @@ class ObservableList<T>(private val list: MutableList<T> = mutableListOf()): Mut
     }
 
     override fun isEmpty(): Boolean {
-        return list.isNotEmpty()
+        return list.isEmpty()
     }
 
     override fun iterator(): MutableIterator<T> {
