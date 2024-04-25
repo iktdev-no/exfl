@@ -14,11 +14,11 @@ class CoroutinesDefault: Coroutines() {
     val scope = CoroutineScope(Dispatchers.Default + Job() + handler)
 
 
-    override fun <T> async(context: CoroutineContext, start: CoroutineStart, block: () -> T): Deferred<T> {
+    override fun <T> async(context: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> T): Deferred<T> {
         return scope.async { block() }
     }
 
-    override fun <T> launch(context: CoroutineContext, start: CoroutineStart, block: () -> T): Job {
+    override fun <T> launch(context: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> T): Job {
         return scope.launch { block() }
     }
 

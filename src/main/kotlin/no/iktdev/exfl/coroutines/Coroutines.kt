@@ -17,13 +17,13 @@ abstract class Coroutines {
 
     abstract fun <T> async(context: CoroutineContext = EmptyCoroutineContext,
                   start: CoroutineStart = CoroutineStart.DEFAULT,
-                  block: () -> T
+                  block: suspend CoroutineScope.() -> T
     ): Deferred<T>
 
     abstract fun <T> launch(
         context: CoroutineContext = EmptyCoroutineContext,
         start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: () -> T): Job
+        block: suspend CoroutineScope.() -> T): Job
 
     /**
      * A global exception handler that catches unhandled exceptions thrown in Coroutines and stores them in a LiveData instance.
