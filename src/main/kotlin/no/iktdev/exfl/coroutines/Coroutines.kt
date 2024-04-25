@@ -1,46 +1,35 @@
 package no.iktdev.exfl.coroutines
 
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import no.iktdev.exfl.observable.Observables
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
-class Coroutines {
-    companion object {
-        private val _exception = Observables.ObservableValue<Throwable>()
-        fun addListener(listener: Observables.ObservableValue.ValueListener<Throwable>) {
-            _exception.addListener(listener)
-        }
-        val handler = CoroutinesExceptionHandler()
+abstract class Coroutines {
+    private val _exception = Observables.ObservableValue<Throwable>()
+    val handler = CoroutinesExceptionHandler(_exception)
 
-        /**
-         * Returns a new CoroutineScope with IO dispatcher and a Job, using the global CoroutinesExceptionHandler instance.
-         * This scope is appropriate for IO-bound tasks, such as reading or writing to files, network communication or database access.
-         *
-         * @return a CoroutineScope instance with the IO dispatcher and a Job
-         */
-        fun io() =  CoroutineScope(Dispatchers.IO + Job() + handler)
 
-        /**
-         * Returns a new CoroutineScope with Default dispatcher and a Job, using the global CoroutinesExceptionHandler instance.
-         * This scope is appropriate for CPU-bound tasks, such as sorting or filtering large data sets or performing complex calculations.
-         *
-         * @return a CoroutineScope instance with the Default dispatcher and a Job
-         */
-        fun default() =  CoroutineScope(Dispatchers.Default + Job() + handler)
+    fun addListener(listener: Observables.ObservableValue.ValueListener<Throwable>): Coroutines {
+        _exception.addListener(listener)
+        return this
     }
 
+    abstract fun <T> async(context: CoroutineContext = EmptyCoroutineContext,
+                  start: CoroutineStart = CoroutineStart.DEFAULT,
+                  block: () -> T
+    ): Deferred<T>
 
-
-
+    abstract fun <T> launch(
+        context: CoroutineContext = EmptyCoroutineContext,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: () -> T): Job
 
     /**
      * A global exception handler that catches unhandled exceptions thrown in Coroutines and stores them in a LiveData instance.
      * The key of this handler is a CoroutineExceptionHandler.Key instance.
      */
-    class CoroutinesExceptionHandler : CoroutineExceptionHandler {
+    class CoroutinesExceptionHandler(private val exceptionObserver: Observables.ObservableValue<Throwable>) : CoroutineExceptionHandler {
         /**
          * The key of this CoroutineExceptionHandler instance.
          */
@@ -61,9 +50,9 @@ class Coroutines {
             }
 
             if (cause != null) {
-                _exception.next(cause)
+                exceptionObserver.next(cause)
             } else {
-                _exception.next(exception)
+                exceptionObserver.next(exception)
             }
         }
     }
